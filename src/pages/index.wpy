@@ -1,0 +1,75 @@
+<style lang="less">
+@bg_color: '#000000';
+.container {
+  background: @bg_color;
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+</style>
+
+<template>
+  <div class="container"></div>
+</template>
+
+<script>
+import wepy from '@wepy/core';
+import eventHub from '../common/eventHub';
+import { mapState } from '@wepy/x';
+import store from '../store';
+import testMixin from '../mixins/test';
+import Http from '../untils/http'
+wepy.page({
+  store,
+  config: {
+    navigationBarTitleText: 'test'
+  },
+
+  hooks: {
+    // Page 级别 hook, 只对当前 Page 的 setData 生效。
+    'before-setData': function(dirty) {
+      if (Math.random() < 0.2) {
+        console.log('setData canceled');
+        return false; // Cancel setData
+      }
+      dirty.time = +new Date();
+      return dirty;
+    }
+  },
+
+  mixins: [testMixin],
+
+  data: {},
+
+  computed: {},
+
+  methods: {},
+
+  created() {
+    let audio = wx.createInnerAudioContext();
+    audio.src = 'https://windke.cn/Public/images/laopengyou.mp3';
+    audio.onTimeUpdate(event => {
+      console.log(event);
+    });
+  //  audio.play();
+
+
+      Http.get('https://api.github.com/users/laike').then(res=>{
+        console.log(res);
+      })
+
+  }
+});
+</script>
+<config>
+{
+    navigationBarTitleText: 'Github',
+    usingComponents: {
+      panel: '~@/components/panel',
+      counter: '~counter',
+      list: '../components/list',
+      group: '../components/group',
+      "slide-view": "module:miniprogram-slide-view",
+    }
+}
+</config>
